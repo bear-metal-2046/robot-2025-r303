@@ -24,7 +24,6 @@ import org.tahomarobotics.robot.util.RobustConfigurator;
 
 import java.util.List;
 
-import static edu.wpi.first.units.BaseUnits.AngleUnit;
 import static org.tahomarobotics.robot.chassis.ChassisConstants.*;
 
 public class SwerveModule {
@@ -155,8 +154,8 @@ public class SwerveModule {
 
     public void updateDesiredState() {
         double steerAngle = getSteerAngle();
-        targetState = SwerveModuleState.optimize(targetState, Rotation2d.fromRotations(steerAngle));
 
+        targetState.optimize(Rotation2d.fromRotations(steerAngle));
         targetState.angle = Rotation2d.fromRotations((targetState.angle.getRotations() % 1.0 + 1.0) % 1.0);
         targetState.speedMetersPerSecond *= targetState.angle.minus(Rotation2d.fromRotations(steerAngle)).getCos();
 
