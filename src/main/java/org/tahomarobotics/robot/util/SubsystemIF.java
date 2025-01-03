@@ -16,7 +16,11 @@ public abstract class SubsystemIF extends SubsystemBase {
     public void onAutonomousInit() {}
     public void onTeleopInit() {}
 
-    public abstract double getEnergyUsed();
+    public double getEnergyUsed() {
+        return 0;
+    }
 
-    public abstract double getTotalCurrent();
+    public double getTotalCurrent() {
+        return 0;
+    }
 }
