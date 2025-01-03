@@ -24,7 +24,6 @@ import org.tahomarobotics.robot.util.RobustConfigurator;
 
 import java.util.List;
 
-import static edu.wpi.first.units.BaseUnits.AngleUnit;
 import static org.tahomarobotics.robot.chassis.ChassisConstants.*;
 
 public class SwerveModule {
@@ -53,7 +52,7 @@ public class SwerveModule {
 
     private final RobustConfigurator configurator;
 
-    public SwerveModule(RobotMap.SwerveModuleDescriptor descriptor, double angularOffset){
+    public SwerveModule(RobotMap.SwerveModuleDescriptor descriptor, double angularOffset) {
         configurator = new RobustConfigurator(logger);
 
         name = descriptor.moduleName();

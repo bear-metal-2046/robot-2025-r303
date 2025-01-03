@@ -26,8 +26,8 @@ public class Robot extends TimedRobot {
     private final List<SubsystemIF> subsystems = new ArrayList<>();
 
     private Command autonomousCommand;
-    
-    
+
+
     /**
      * This method is run when the robot is first started up and should be used for any
      * initialization code.
@@ -39,8 +39,8 @@ public class Robot extends TimedRobot {
         subsystems.add(Elevator.getInstance().initialize());
         subsystems.add(Mechanism.getInstance().initialize());
     }
-    
-    
+
+
     /**
      * This method is called every 20 ms, no matter the mode. Use this for items like diagnostics
      * that you want ran during disabled, autonomous, teleoperated and test.
@@ -56,66 +56,62 @@ public class Robot extends TimedRobot {
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
     }
-    
-    
+
+
     /** This method is called once each time the robot enters Disabled mode. */
     @Override
     public void disabledInit() {}
-    
-    
+
+
     @Override
     public void disabledPeriodic() {}
-    
-    
+
+
     /** This autonomous runs the autonomous command selected by your {@link OI} class. */
     @Override
-    public void autonomousInit()
-    {
+    public void autonomousInit() {
 //        autonomousCommand = robotContainer.getAutonomousCommand();
-        
+
         // schedule the autonomous command (example)
-        if (autonomousCommand != null)
-        {
+        if (autonomousCommand != null) {
             autonomousCommand.schedule();
         }
     }
-    
-    
+
+
     /** This method is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {}
-    
-    
+
+
     @Override
-    public void teleopInit()
-    {
+    public void teleopInit() {
         subsystems.forEach(SubsystemIF::onTeleopInit);
     }
-    
-    
+
+
     /** This method is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {}
-    
-    
+
+
     @Override
-    public void testInit()
-    {
+    public void testInit() {
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
     }
-    
-    
+
+
     /** This method is called periodically during test mode. */
     @Override
     public void testPeriodic() {}
-    
-    
+
+
     /** This method is called once when the robot is first started up. */
     @Override
     public void simulationInit() {}
-    
-    
+
+
     /** This method is called periodically whilst in simulation. */
     @Override
     public void simulationPeriodic() {}
