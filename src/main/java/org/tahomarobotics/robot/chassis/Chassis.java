@@ -20,8 +20,6 @@ import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.tahomarobotics.robot.RobotConfiguration;
 import org.tahomarobotics.robot.RobotMap;
 import org.tahomarobotics.robot.chassis.commands.AlignSwerveCommand;
@@ -33,8 +31,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Chassis extends SubsystemIF {
-    private static final Logger logger = LoggerFactory.getLogger(Chassis.class);
-
     private static final Chassis INSTANCE = new Chassis();
 
     private final List<SwerveModule> modules;

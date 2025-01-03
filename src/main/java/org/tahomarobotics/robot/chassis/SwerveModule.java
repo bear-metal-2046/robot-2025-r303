@@ -16,20 +16,15 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.tahomarobotics.robot.RobotConfiguration;
 import org.tahomarobotics.robot.RobotMap;
 import org.tahomarobotics.robot.util.RobustConfigurator;
 
 import java.util.List;
 
-import static edu.wpi.first.units.BaseUnits.AngleUnit;
 import static org.tahomarobotics.robot.chassis.ChassisConstants.*;
 
 public class SwerveModule {
-    private static final Logger logger = LoggerFactory.getLogger(SwerveModule.class);
-
     private final String name;
     private final Translation2d translationOffset;
     private double angularOffset;
@@ -51,11 +46,7 @@ public class SwerveModule {
     private final VelocityVoltage driveMotorVelocity = new VelocityVoltage(0.0).withEnableFOC(RobotConfiguration.CANIVORE_PHOENIX_PRO);
     private final PositionDutyCycle steerMotorPosition = new PositionDutyCycle(0.0).withEnableFOC(RobotConfiguration.CANIVORE_PHOENIX_PRO);
 
-    private final RobustConfigurator configurator;
-
-    public SwerveModule(RobotMap.SwerveModuleDescriptor descriptor, double angularOffset){
-        configurator = new RobustConfigurator(logger);
-
+    public SwerveModule(RobotMap.SwerveModuleDescriptor descriptor, double angularOffset) {
         name = descriptor.moduleName();
         translationOffset = descriptor.offset();
         this.angularOffset = angularOffset;
@@ -64,9 +55,9 @@ public class SwerveModule {
         steerMotor = new TalonFX(descriptor.steerId(), RobotConfiguration.CANBUS_NAME);
         steerEncoder = new CANcoder(descriptor.encoderId(), RobotConfiguration.CANBUS_NAME);
 
-        configurator.configureTalonFX(driveMotor, driveMotorConfiguration, descriptor.moduleName() + " drive motor");
-        configurator.configureTalonFX(steerMotor, steerMotorConfiguration, descriptor.encoderId(), descriptor.moduleName() + " steer motor");
-        configurator.configureCancoder(steerEncoder, encoderConfiguration, angularOffset, descriptor.moduleName() + " encoder");
+        RobustConfigurator.tryConfigureTalonFX(name + " Drive Motor", driveMotor, driveMotorConfiguration);
+        RobustConfigurator.tryConfigureTalonFX(name + " Steer Motor", steerMotor, steerMotorConfiguration);
+        RobustConfigurator.tryConfigureCANcoder(name + " Encoder", steerEncoder, encoderConfiguration);
 
         drivePosition = driveMotor.getPosition();
         driveVelocity = driveMotor.getVelocity();
@@ -92,19 +83,19 @@ public class SwerveModule {
     // CALIBRATION
 
     public void initCalibration() {
-        configurator.setCancoderAngularOffset(steerEncoder, 0);
-        configurator.setMotorNeutralMode(steerMotor, NeutralModeValue.Coast);
+        RobustConfigurator.trySetCancoderAngularOffset(name + " Encoder", steerEncoder, 0);
+        RobustConfigurator.trySetMotorNeutralMode(name + " Steer Motor", steerMotor, NeutralModeValue.Coast);
     }
 
     public double finalizeCalibration() {
         angularOffset = -steerPosition.refresh().getValueAsDouble();
-        configurator.setCancoderAngularOffset(steerEncoder, angularOffset);
-        configurator.setMotorNeutralMode(steerMotor, NeutralModeValue.Brake);
+        cancelCalibration();
         return angularOffset;
     }
 
     public void cancelCalibration() {
-        configurator.setCancoderAngularOffset(steerEncoder, angularOffset);
+        RobustConfigurator.trySetCancoderAngularOffset(name + " Encoder", steerEncoder, angularOffset);
+        RobustConfigurator.trySetMotorNeutralMode(name + " Steer Motor", steerMotor, NeutralModeValue.Brake);
     }
 
     // GETTERS

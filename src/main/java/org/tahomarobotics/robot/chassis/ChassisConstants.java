@@ -76,9 +76,11 @@ public class ChassisConstants {
                     .withBeepOnBoot(true)
                     .withBeepOnConfig(true));
 
-    public static final MagnetSensorConfigs encoderConfiguration = new MagnetSensorConfigs()
-            .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1)
-            .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
+    public static final CANcoderConfiguration encoderConfiguration = new CANcoderConfiguration()
+            .withMagnetSensor(new MagnetSensorConfigs()
+                    .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1)
+                    .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
+            );
 
     public static double clampAccel(double value) {
         return MathUtil.clamp(value, -ACCELERATION_LIMIT, ACCELERATION_LIMIT);

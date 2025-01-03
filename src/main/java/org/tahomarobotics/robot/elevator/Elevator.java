@@ -3,6 +3,7 @@ package org.tahomarobotics.robot.elevator;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
@@ -11,8 +12,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.tahomarobotics.robot.Robot;
 import org.tahomarobotics.robot.RobotConfiguration;
 import org.tahomarobotics.robot.RobotMap;
@@ -24,8 +23,6 @@ import org.tahomarobotics.robot.util.SysIdTest;
 import static org.tahomarobotics.robot.elevator.ElevatorConstants.*;
 
 public class Elevator extends SubsystemIF {
-
-    public static final Logger logger = LoggerFactory.getLogger(Elevator.class);
     private static final Elevator INSTANCE = new Elevator();
     private double targetHeight;
     private final MotionMagicVoltage positionControl = new MotionMagicVoltage(0.0).withEnableFOC(RobotConfiguration.RIO_PHOENIX_PRO);
@@ -44,12 +41,10 @@ public class Elevator extends SubsystemIF {
     }
 
     private Elevator() {
-        RobustConfigurator configurator = new RobustConfigurator(logger);
-
         elevatorRight = new TalonFX(RobotMap.ELEVATOR_RIGHT_MOTOR);
         elevatorLeft = new TalonFX(RobotMap.ELEVATOR_LEFT_MOTOR);
 
-        configurator.configureTalonFX(elevatorRight, elevatorConfig, elevatorLeft, false);
+        RobustConfigurator.tryConfigureTalonFXWithFollower("Elevator Right Motor", elevatorRight, elevatorLeft, elevatorConfig);
 
         sysIdTest = new SysIdTest(this, elevatorRight);
 
@@ -58,9 +53,7 @@ public class Elevator extends SubsystemIF {
         elevatorCurrent = elevatorRight.getStatorCurrent();
 
         BaseStatusSignal.setUpdateFrequencyForAll(RobotConfiguration.MECHANISM_UPDATE_FREQUENCY, elevatorCurrent, motorPosition, elevatorVelocity);
-
-//        ParentDevice.optimizeBusUtilizationForAll(elevatorRight, elevatorLeft);
-
+        ParentDevice.optimizeBusUtilizationForAll(elevatorRight, elevatorLeft);
     }
 
     public void zero() {
